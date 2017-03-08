@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour {
 	private bool movingRight = true;
 	public float speed = 5f;
 	private float xmax,xmin;
+	public float spawnDelay = 0.5f;
 
 	
 	// Use this for initialization
@@ -19,11 +20,27 @@ public class EnemySpawner : MonoBehaviour {
 		xmax = rightEdge.x;
 		xmin = leftEdge.x;
 		
+		CreateUntilFull();
+		
+	}
+	void CreateUntilFull(){
+		Transform FreePosition = NextFreePosition();
+		if(FreePosition){
+			GameObject enemy = Instantiate (enemyPrefab,FreePosition.position,Quaternion.identity) as GameObject;
+			enemy.transform.parent = FreePosition;
+		}
+		if(NextFreePosition()){
+			Invoke("CreateUntilFull",spawnDelay);
+		}
+	}
+	void CreateFormation(){
+		
+		
 		foreach(Transform child in transform){
 			GameObject enemy = Instantiate (enemyPrefab,child.transform.position,Quaternion.identity) as GameObject;
 			enemy.transform.parent = child;
+			
 		}
-		
 	}
 	
 	public void OnDrawGizmos(){
@@ -47,6 +64,27 @@ public class EnemySpawner : MonoBehaviour {
 		else if(rightEdgeOfFormation > xmax){
 		movingRight = false;
 		}
+		
+		if(AllMembersDead()){
+			Debug.Log("Empty formation");
+			CreateUntilFull();
+			
+		}
+		
+	}
+	Transform NextFreePosition(){
+		foreach(Transform childPositionGameObject in transform){
+			if(childPositionGameObject.childCount == 0)
+				return childPositionGameObject;
+		}
+		return null;
+	}
 	
+	bool AllMembersDead(){
+		foreach(Transform childPositionGameObject in transform){
+			if(childPositionGameObject.childCount > 0)
+				return false;
+		}
+		return true;
 	}
 }
