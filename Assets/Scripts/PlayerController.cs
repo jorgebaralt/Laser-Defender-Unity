@@ -11,6 +11,11 @@ public class PlayerController : MonoBehaviour {
 	public float health = 250f;
 	public AudioClip ShootSound;
 	
+	void Die(){
+		LevelManager man = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+		man.LoadLevel("Win Screen");
+		Destroy(gameObject);
+	}
 	// Use this for initialization
 	void Start () {
 		float distance = transform.position.z - Camera.main.transform.position.z;
@@ -53,6 +58,7 @@ public class PlayerController : MonoBehaviour {
 			health -= missile.getDamage();
 			if(health <= 0){
 				Destroy (gameObject);
+				Die ();
 			}
 		}
 	}
