@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
 	public float projectileSpeed;
 	public float shootingRate;
 	public float health = 250f;
+	public AudioClip ShootSound;
 	
 	// Use this for initialization
 	void Start () {
@@ -19,7 +20,7 @@ public class PlayerController : MonoBehaviour {
 		xmax = rightmost.x - padding;
 	}
 	void Shoot(){
-
+			AudioSource.PlayClipAtPoint(ShootSound,transform.position);
 			GameObject beam = Instantiate(projectile,transform.position + new Vector3(0f, 1f,0f),Quaternion.identity) as GameObject;
 			beam.rigidbody2D.velocity = new Vector3(0f,projectileSpeed,0f);
 			
